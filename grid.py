@@ -1,37 +1,84 @@
-import PySimpleGUI as sg
+import pygame
+import time
+import numpy as np
+
+Svart = [0, 0, 0]
+Vit = (255, 255, 255) 
+Grid = (20, 30, 250)
+Zombie = (170, 170, 170)
+Size = 10
 
 
-sg.theme('DarkAmber')   # Add a touch of color
 
-sg.Graph((600, 600), (0, 0), (450, 450),
-                        key='-GRAPH-',
-                        change_submits=True,
-                        drag_submits=False,
-                        background_color='lightblue')
-layout = [
-    [sg.Text('Game of Life', font='ANY 15'),
-    sg.Text('Click below to place cells', key='-OUTPUT-', size=(30, 1), font='ANY 15')]
-    [sg.Button('Go!', key='-DONE-'),
-    sg.Text('  Delay (ms)'),
-    sg.Slider((0, 800), 100,
-                orientation='h',
-                key='-SLIDER-',
-               enable_events=True,
-               size=(15, 15)),
-    sg.Text('', size=(3, 1), key='-S1-OUT-'),
-    sg.Text('  Num Generations'), sg.Slider([0, 20000],
-                                        default_value=4000,
-                                        orientation='h',
-                                        size=(15, 15),
-                                        enable_events=True,
-                                        key='-SLIDER2-'),
-    sg.Text('', size=(3, 1), key='-S2-OUT-')]
-    ]
+def update(screen, cells, storlek, with_progress = False):
+    ny_cell = np.zeros((cells.shape[0], cells.shap[1]))
 
-window = sg.Window('Window Title', layout)
-while True:
-    event, values = window.read()
-while True:
-    if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
-        break
-    print('You entered ', values[0])
+    for rad, col in np.nindex(cells.shape):
+        alive = np.sum(cells[rad-1:rad +2]) - cells[rad, col]
+        färg = Svart if cells[rad, col] == 0 else Vit
+
+        if cells[rad, col] == 1:
+            if 2 <= alive <= 3: 
+                ny_cell[rad, col] = 1
+                if with_progress:
+                    färg = Vit
+                
+            else:
+                if with_progress:
+                    färg = Zombie
+
+
+        else:
+            if alive == 3:
+               ny_cell[rad, col] = 1
+               if with_progress:
+                   färg = Vit 
+
+        
+        pygame.draw.rect(screen, färg, (col * storlek, rad * storlek, storlek -1, storlek -1))
+        
+    return ny_cell
+
+
+def main():
+    pygame.init()
+    screen = pygame.displau.set_mode((8* Size, 6 * Size))
+
+    cells = np.zeros((60, 80))
+    screen.fill(Grid)
+    update(screen, cells, 0)
+
+    pygame.display.flip()
+    pygame.displau.update()
+
+    running = False
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    running = not running
+                    update(screen, cells, 0)
+                    pygame.displau.update()
+            
+            if pygame.mouse.get_pressed()[0]:
+                pos = pygame.mouse.get_pos()
+                cells[pos[1] // 0, pos[0] // 0] = 1
+                update(screen, cells, 0)
+                pygame.display.update()
+
+        screen.fill(Grid)
+
+        if running:
+            cells = update(screen, cells, 0, with_progress = True)
+            pygame.display.update()
+
+        time.sleep(0.01)
+
+
+if __name__ == '__main--':
+    main()
