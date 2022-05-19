@@ -133,33 +133,33 @@ class _mainFrame(QWidget): #le stuff
 			painter.drawRect(ins * x, ins * y, ins, ins)
 
 
-		# if self.zoom < 0.3:
-		# 	return
+		if self.zoom < 0.3:
+			return
 
-		# painter.setPen(QColor(180,180,180))
+		painter.setPen(QColor(180,180,180))
 
-		# w = self.frameGeometry().width()
-		# l = self.frameGeometry().height()
-		# shiftx = ins * (self.panx // (ins * self.zoom))
-		# shifty = ins * (self.pany // (ins * self.zoom))
+		w = self.frameGeometry().width()
+		l = self.frameGeometry().height()
+		shiftx = ins * (self.panx // (ins * self.zoom))
+		shifty = ins * (self.pany // (ins * self.zoom))
 
-		# for i in range(int(l/ins/self.zoom) +2):
-		# 	x = int(shiftx + i*ins)
-		# 	y = int(shifty)
-		# 	_y = int(shifty + (l+ins)/self.zoom + self.pany % (ins * self.zoom))
-		# 	painter.drawLine(x, y, x, _y)
-		# for j in range(int(w/ins/self.zoom) +2):
-		# 	x = int(shiftx)
-		# 	_x = int(shiftx + (w+ins)/self.zoom + self.panx % (ins * self.zoom))
-		# 	y = int(shifty + j*ins)
-		# 	painter.drawLine(x, y, _x, y)
+		for i in range(int(l/ins/self.zoom) +2):
+			x = int(shiftx + i*ins)
+			y = int(shifty)
+			_y = int(shifty + (l+ins)/self.zoom + self.pany % (ins * self.zoom))
+			painter.drawLine(x, y, x, _y)
+		for j in range(int(w/ins/self.zoom) +2):
+			x = int(shiftx)
+			_x = int(shiftx + (w+ins)/self.zoom + self.panx % (ins * self.zoom))
+			y = int(shifty + j*ins)
+			painter.drawLine(x, y, _x, y)
 
-		# if show_info:
-		# 	painter.setBrush(QColor(150, 150, 150, 50))
-		# 	painter.setPen(QColor(Qt.blue))
+		if show_info:
+			painter.setBrush(QColor(150, 150, 150, 50))
+			painter.setPen(QColor(Qt.blue))
 
-		# 	for x,y in self.info_list:
-		# 		painter.drawRect(ins * x, ins * y, ins, ins)
+			for x,y in self.info_list:
+				painter.drawRect(ins * x, ins * y, ins, ins)
 
 	def mousePressEvent(self, event): #spawn cells
 		if event.button() == Qt.RightButton:
