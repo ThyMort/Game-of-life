@@ -2,13 +2,21 @@ import pygame
 import time
 import numpy as np
 
-Svart = (10, 10, 10)
-Grid = (40, 40, 40)
-Zombie = (170, 170, 170)
-Vit = (255, 255, 255) 
+pygame.init()
 
-tid = 0.5
+
+Svart = (10, 10, 10)
+Grid = (80, 80, 80)
+Vit = (255, 255, 255) 
+Röd = (255, 0, 0)
+
+tid = 0.001
 size = 100
+
+button = pygame.Surface((20, 20))
+button.fill(Röd) 
+button_rect = button.get_rect(center = (780, 20))
+
 
 def update(screen, cells, storlek, with_progress = False):
     nya_celler = np.zeros((cells.shape[0], cells.shape[1]))
@@ -25,8 +33,7 @@ def update(screen, cells, storlek, with_progress = False):
                 
             else:
                 if with_progress:
-                    färg = Zombie
-
+                    färg = Svart
 
         else:
             if alive == 3:
@@ -35,20 +42,27 @@ def update(screen, cells, storlek, with_progress = False):
                     färg = Vit 
 
         pygame.draw.rect(screen, färg, (col * storlek, rad * storlek, storlek -1, storlek -1))
-        
+        screen.blit(button, button_rect)
+
     return nya_celler
 
-
+screen = pygame.display.set_mode((8 * size, 6* size))
 
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((8 * size, 6* size))
-    
-    button_1 = pygame.Rect(50, 100, 200, 50)
-    pygame.draw.rect(screen, (255, 0, 0), button_1)
+
+    pygame.display.set_caption('Mårts Game of Life')
 
     cells = np.zeros((60, 80))
     screen.fill(Grid)
+
+    text = (pygame.font.SysFont('Corbel',35)).render('yes' , True , Röd)
+    button.blit(text, (20, 30))
+    
+    screen.blit(button, button_rect)
+
+    
+    pygame.draw.rect
+
     update(screen, cells, 10)
 
     pygame.display.flip()
@@ -70,32 +84,18 @@ def main():
 
             pos = pygame.mouse.get_pos()
             
-            if pygame.mouse.get_pressed()[0]: #placera cell
-                cells[pos[1] // 10, pos[0] // 10] = 1
-                update(screen, cells, 10)
-                pygame.display.update()
-
-            button = pygame.Rect(50, 100, 200, 50)
-            
-            if button.collidepoint(pos):
-                if click:
+            if pygame.mouse.get_pressed()[0]: 
+                pos = pygame.mouse.get_pos()
+                
+                if button_rect.collidepoint(pos): #open settings
+                    running = not running
                     options()
 
- 
-            click = False
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        pygame.quit()
-                        sys.exit()
-                if event.type == MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        click = True
- 
-            pygame.display.update()
+
+                else:
+                    cells[pos[1] // 10, pos[0] // 10] = 1 #placera cell
+                    update(screen, cells, 10)
+                    pygame.display.update()
 
         screen.fill(Grid)
 
@@ -110,15 +110,16 @@ def options():
     
     while running_options:
         screen.fill((Vit))
-        'options', (255, 255, 255), screen, 20, 20
+
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
-        
+                return
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running_options = False
+
         pygame.display.update()
 
 
