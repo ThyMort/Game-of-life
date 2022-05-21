@@ -2,8 +2,8 @@ import pygame
 import time
 import numpy as np
 
-pygame.init()
 
+pygame.init()
 
 Svart = (10, 10, 10)
 Grid = (80, 80, 80)
@@ -13,12 +13,20 @@ Röd = (255, 0, 0)
 tid = 0.001
 size = 100
 
+screen = pygame.display.set_mode((8 * size, 6* size))
+pygame.display.set_caption('Mårts Game of Life')
+
+
 button = pygame.Surface((20, 20))
 button.fill(Röd) 
+text = (pygame.font.SysFont('Corbel',150)).render('YES' , True , Svart)
+print (text)
+screen.blit(text, (780, 20))
 button_rect = button.get_rect(center = (780, 20))
 
 
 def update(screen, cells, storlek, with_progress = False):
+    
     nya_celler = np.zeros((cells.shape[0], cells.shape[1]))
 
     for rad, col in np.ndindex(cells.shape):
@@ -46,17 +54,13 @@ def update(screen, cells, storlek, with_progress = False):
 
     return nya_celler
 
-screen = pygame.display.set_mode((8 * size, 6* size))
+
 
 def main():
 
-    pygame.display.set_caption('Mårts Game of Life')
-
     cells = np.zeros((60, 80))
+    
     screen.fill(Grid)
-
-    text = (pygame.font.SysFont('Corbel',35)).render('yes' , True , Röd)
-    button.blit(text, (20, 30))
     
     screen.blit(button, button_rect)
 
@@ -107,7 +111,8 @@ def main():
 
 def options():
     running_options = True
-    
+    cells = np.zeros((60, 80))
+
     while running_options:
         screen.fill((Vit))
 
@@ -119,6 +124,9 @@ def options():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running_options = False
+                    print('escape from options')
+
+                    update(screen, cells, 10)
 
         pygame.display.update()
 

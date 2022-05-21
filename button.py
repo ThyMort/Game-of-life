@@ -19,6 +19,19 @@ welcomeMessageBackground = pygame.draw.rect(welcomeScreen, red, [200, 100, 400, 
 welcomeMessage = welcomeFont.render('Welcome! Click a button to get started.', True, white, red)
 welcomeScreen.blit(welcomeMessage, (70, 100))
 
+def button(self):
+    self.clicked = Falsepos = pygame.mouse.get_pos()
+
+    bot = pygame.draw.rect(screen, (251, 191, 0), (255, 350, 150, 50))
+    restart_image = self.font.render(f'RESTART', False, 'black')
+    restart_rect = restart_image.get_rect(topleft=(265,365))
+    screen.blit(restart_image,restart_rect)
+
+    if bot.collidepoint(pos):
+        if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+            self.lives = 3
+            self.clicked = True
+            self.score =0
 
 pygame.display.update()
 

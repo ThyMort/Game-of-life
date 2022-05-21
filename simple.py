@@ -6,7 +6,7 @@ import sys
 pygame.init()
 
 # screen resolution
-res = (720,720)
+res = (800,600)
 
 # opens up a window
 screen = pygame.display.set_mode(res)
@@ -27,6 +27,8 @@ width = screen.get_width()
 # stores the height of the
 # screen into a variable
 height = screen.get_height()
+
+print(width, height)
 
 # defining a font
 smallfont = pygame.font.SysFont('Corbel',35)
