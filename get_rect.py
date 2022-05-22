@@ -1,41 +1,25 @@
+import pygame
 import sys
-import pygame as pg
 
-BG_COLOR = pg.Color(80, 60, 70)
-PLAYER_COLOR = pg.Color(90, 140, 190)
+pygame.init()
+surface = pygame.display.set_mode( (200, 200) )
+last_color = None
 
-def main():
-    screen = pg.display.set_mode((640, 480))
-    clock = pg.time.Clock()
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
-    player_img = pg.Surface((40, 60))
-    player_img.fill(PLAYER_COLOR)
-    # Create a rect with the size of the image/pygame.Surface
-    # and immediately set it's topleft coords to (100, 300).
-    player_rect = player_img.get_rect(topleft=(100, 300))
-
-    done = False
-
-    while not done:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                done = True
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_d:
-                    # Set the center to these new coords.
-                    player_rect.center = (400, 200)
-                if event.key == pg.K_a:
-                    # Set the x coord to 300.
-                    player_rect.x = 300
-
-        screen.fill(BG_COLOR)
-        screen.blit(player_img, player_rect)
-        pg.display.flip()
-        clock.tick(30)
+    surface.fill( (0,0,255) )
+    pygame.draw.rect( surface, (255,0,0), (0, 0, 100, 100) )
+    pygame.draw.rect( surface, (0,255,0), (100, 100, 100, 100) )
 
 
-if __name__ == '__main__':
-    pg.init()
-    main()
-    pg.quit()
-    sys.exit()
+    color = surface.get_at(pygame.mouse.get_pos()) 
+    if last_color != color:
+        print(color)
+        last_color = color
+
+    pygame.display.update()
+
