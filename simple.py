@@ -4,7 +4,10 @@ pygame.init()
 
 pos = pygame.mouse.get_pos()
 
-cells = [pos[1] // 10, pos[0] // 10] = 1
+cells = [pos // 10, pos // 10] = 1
 
 print(cells)
 
+mm = 2
+
+print (mm)

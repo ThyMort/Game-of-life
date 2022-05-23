@@ -16,6 +16,7 @@ while True:
     pygame.draw.rect( surface, (0,255,0), (100, 100, 100, 100) )
 
 
+
     color = surface.get_at(pygame.mouse.get_pos()) 
     if last_color != color:
         print(color)
