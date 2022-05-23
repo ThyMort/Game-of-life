@@ -1,11 +1,9 @@
+from datetime import datetime
 import pygame
-from threading import Timer
+import time
 
 import numpy as np
 import logic 
-
-
-numba = 0
 
 GRID = (80, 80, 80)
 DEAD = (10, 10, 10)
@@ -22,14 +20,12 @@ height = setting_img.get_height()
 setting_button = pygame.transform.scale(setting_img, (int(width), int(height))) 
 setting_rect = setting_button.get_rect(center = (770, 30))
 
+
 def main():
-    
-    numba_1 = 0
 
     pygame.init()
     pygame.display.set_caption('Mårts Game of Life')
-
-    cell_list = logic.update()
+    last_update = time.time()
 
     screen.fill(GRID) #rita background
     
@@ -47,13 +43,13 @@ def main():
             if event.type == pygame.KEYDOWN: # start
                 if event.key == pygame.K_SPACE:
                     if running == False: 
-                        running = logic.status(True)
-    
+                        running = True
                     else:
-                        running = logic.status(False)
+                        running = False
+                        
             
         if pygame.mouse.get_pressed()[0]: #click
-            print ('id does')
+            print ('click')
             pos = pygame.mouse.get_pos()
 
             if setting_rect.collidepoint(pos): #open settings
@@ -63,7 +59,17 @@ def main():
 
             else: 
                 logic.place_cell(pos)
+                print ('places cell')
+
+        cell_list = logic.update(active=False)
+
+        if time.time() - last_update > 1:
+            last_update = time.time()
+        
+            if running:
+                cell_list = logic.update(active=True)
             
+    
         for rad, col in np.ndindex(cell_list.shape): #rita celler
             if [rad, col] == 1:
                 cell_color = ALIVE
@@ -73,16 +79,11 @@ def main():
             pygame.draw.rect(screen, cell_color, (col * size, rad * size, size -1, size -1))       
 
 
-        if numba_1 != delayer():
-            screen.blit(setting_button, setting_rect) 
-            pygame.display.flip()
-            numba_1 = numba
+        screen.blit(setting_button, setting_rect) 
+        pygame.display.flip()
+        print ('updating')
+            
 
-def delayer():
-    global numba
-    numba += 1
-    Timer(1, delayer).start
-    return numba
 
 def options():
 
