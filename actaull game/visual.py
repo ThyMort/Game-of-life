@@ -1,17 +1,17 @@
-# tudo 
-# 1 swinglish
-# 2 seperation of concern
-# 3 visa för limpan när det funkar så hittar vi på nått kul
-
 import pygame
-import time
+from threading import Timer
+
 import numpy as np
 import logic 
 
 
-GRID = (80, 80, 80)
+numba = 0
 
-delay = 0.001
+GRID = (80, 80, 80)
+DEAD = (10, 10, 10)
+ALIVE = (255, 255, 255) 
+
+delay = 0.5
 size = 10
 screen = pygame.display.set_mode((80 * size, 60* size))
 
@@ -22,24 +22,23 @@ height = setting_img.get_height()
 setting_button = pygame.transform.scale(setting_img, (int(width), int(height))) 
 setting_rect = setting_button.get_rect(center = (770, 30))
 
-
 def main():
     
+    numba_1 = 0
+
     pygame.init()
     pygame.display.set_caption('Mårts Game of Life')
 
-    cells = np.zeros((6 * size, 8 * size))
-    
-    screen.fill(GRID) 
-    logic.update(screen, cells, size)
-    screen.blit(setting_button, setting_rect)
+    cell_list = logic.update()
 
-    pygame.display.flip()
-    pygame.display.update()
-
-    running = False
+    screen.fill(GRID) #rita background
     
-    while True:
+    running = False #starta pausad
+    
+    while True: #game loop
+        # ibland när det är lämligt kör update
+        # dvs: 
+
         for event in pygame.event.get(): #quit
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -47,40 +46,50 @@ def main():
 
             if event.type == pygame.KEYDOWN: # start
                 if event.key == pygame.K_SPACE:
-                    if running == False:
-                        running = True
-                
+                    if running == False: 
+                        running = logic.status(True)
+    
                     else:
-                        running = False
+                        running = logic.status(False)
             
-            if pygame.mouse.get_pressed()[0]: 
-                print ('id does')
-                pos = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()[0]: #click
+            print ('id does')
+            pos = pygame.mouse.get_pos()
 
-                if setting_rect.collidepoint(pos): #open settings
-                    running = False
-                    options()
-                    print ('option')
+            if setting_rect.collidepoint(pos): #open settings
+                running = False
+                options()
+                print ('option')
 
-                else:
-                    cells[pos[1] // 10, pos[0] // 10] = 1
-                    logic.update(screen, cells, size)
-                    pygame.display.update()
-                    print ('placerar')
+            else: 
+                logic.place_cell(pos)
+            
+        for rad, col in np.ndindex(cell_list.shape): #rita celler
+            if [rad, col] == 1:
+                cell_color = ALIVE
+            else:
+                cell_color = DEAD 
+            
+            pygame.draw.rect(screen, cell_color, (col * size, rad * size, size -1, size -1))       
 
-            if running == True:
-                cells = logic.update(screen, cells, size)
-                screen.blit(setting_button, setting_rect)
-                pygame.display.update()
-        
-        time.sleep(delay)
+
+        if numba_1 != delayer():
+            screen.blit(setting_button, setting_rect) 
+            pygame.display.flip()
+            numba_1 = numba
+
+def delayer():
+    global numba
+    numba += 1
+    Timer(1, delayer).start
+    return numba
 
 def options():
 
     running_options = True
     settings_color = (155, 185, 208)
     
-    pygame.draw.rect(screen, settings_color, ((size, size),(40* size, 30 *size)))
+    pygame.draw.rect(screen, settings_color, ((400, 0),(40* size, 30 *size)))
     
     pygame.display.flip()
 
@@ -96,8 +105,8 @@ def options():
                     running_options = False
                     print('escape from options')          
 
-
-                
+    screen.fill(GRID)
+         
 if __name__ == '__main__':
     main()
 
