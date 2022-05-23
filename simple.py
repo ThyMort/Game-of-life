@@ -1,13 +1,8 @@
-import pygame
+running = False
 
-pygame.init()
+running = not running
 
-pos = pygame.mouse.get_pos()
 
-cells = [pos // 10, pos // 10] = 1
+if running:
+	print (2)
 
-print(cells)
-
-mm = 2
-
-print (mm)
