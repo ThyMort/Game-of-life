@@ -3,14 +3,13 @@
 # 2 seperation of concern
 # 3 visa för limpan när det funkar så hittar vi på nått kul
 
-
 import pygame
 import time
 import numpy as np
+import logic 
 
-DEAD = (10, 10, 10)
+
 GRID = (80, 80, 80)
-ALIVE = (255, 255, 255) 
 
 delay = 0.001
 size = 10
@@ -32,16 +31,15 @@ def main():
     cells = np.zeros((6 * size, 8 * size))
     
     screen.fill(GRID) 
-    logic.py(screen, cells, size)
+    logic.update(screen, cells, size)
     screen.blit(setting_button, setting_rect)
 
     pygame.display.flip()
     pygame.display.update()
 
-    game_logic = True
     running = False
     
-    while game_logic:
+    while True:
         for event in pygame.event.get(): #quit
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -63,16 +61,15 @@ def main():
                     running = False
                     options()
                     print ('option')
-                    game_logic = False
 
                 else:
                     cells[pos[1] // 10, pos[0] // 10] = 1
-                    update(screen, cells, size)
+                    logic.update(screen, cells, size)
                     pygame.display.update()
                     print ('placerar')
 
             if running == True:
-                cells = update(screen, cells, size)
+                cells = logic.update(screen, cells, size)
                 screen.blit(setting_button, setting_rect)
                 pygame.display.update()
         
@@ -97,12 +94,8 @@ def options():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running_options = False
-                    print('escape from options')
-                    game_logic = True
+                    print('escape from options')          
 
-    pygame.display.flip()
-
-    
 
                 
 if __name__ == '__main__':

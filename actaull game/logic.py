@@ -1,3 +1,8 @@
+import pygame
+import numpy as np
+
+DEAD = (10, 10, 10)
+ALIVE = (255, 255, 255) 
 
 def update(screen, cells, size): 
     
